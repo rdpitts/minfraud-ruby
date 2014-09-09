@@ -33,6 +33,9 @@ module Minfraud
     # Override the host choice for this transaction
     attr_accessor :host_choice
 
+    # Stores the minFraud response
+    attr_accessor :response
+
     def initialize
       yield self
       unless has_required_attributes?
