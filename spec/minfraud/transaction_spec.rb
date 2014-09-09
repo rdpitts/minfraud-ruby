@@ -5,8 +5,8 @@ describe Minfraud::Transaction do
   describe '.new' do
     it 'yields the current instance module' do
       Minfraud::Transaction.new do |t|
-        t.stub(:has_required_attributes?).and_return(true)
-        t.stub(:validate_attributes).and_return(nil)
+        allow(t).to receive(:has_required_attributes?).and_return(true)
+        allow(t).to receive(:validate_attributes).and_return(nil)
         expect(t).to be_an_instance_of(Minfraud::Transaction)
       end
     end
@@ -32,15 +32,15 @@ describe Minfraud::Transaction do
   describe '#risk_score' do
     subject(:transaction) do
       Minfraud::Transaction.new do |t|
-        t.stub(:has_required_attributes?).and_return(true)
-        t.stub(:validate_attributes).and_return(nil)
+        allow(t).to receive(:has_required_attributes?).and_return(true)
+        allow(t).to receive(:validate_attributes).and_return(nil)
       end
     end
     let(:response) { double(risk_score: risk_score) }
     let(:risk_score) { 3.4 }
 
     before do
-      Minfraud::Request.stub(:get).and_return(response)
+      allow(Minfraud::Request).to receive(:get).and_return(response)
     end
 
     context 'transaction has not already been sent to MaxMind' do

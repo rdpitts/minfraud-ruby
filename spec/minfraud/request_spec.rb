@@ -14,8 +14,8 @@ describe Minfraud::Request do
 
   describe '#get' do
     it 'sends appropriately encoded transaction data to minFraud service' do
-      Minfraud.stub(:license_key).and_return('6')
-      Minfraud::Response.stub(:new).and_return(success_response)
+      allow(Minfraud).to receive(:license_key?).and_return('6')
+      allow(Minfraud::Response).to receive(:new).and_return(success_response)
       trans = Minfraud::Transaction.new do |t|
         t.ip = '1'
         t.city = '2'
@@ -47,8 +47,8 @@ describe Minfraud::Request do
     end
 
     it 'returns Response object' do
-      request.stub(:send_get_request)
-      Minfraud::Response.stub(:new).and_return(success_response)
+      allow(request).to receive(:send_get_request)
+      allow(Minfraud::Response).to receive(:new).and_return(success_response)
       expect(request.get).to eql(success_response)
     end
   end

@@ -4,7 +4,7 @@ describe Minfraud do
 
   describe '.configure' do
     it 'yields the Minfraud module' do
-      Minfraud.stub(:has_required_configuration?).and_return(true)
+      allow(Minfraud).to receive(:has_required_configuration?).and_return(true)
       Minfraud.configure do |c|
         expect(c).to eql(Minfraud)
       end
@@ -56,7 +56,7 @@ describe Minfraud do
 
     it 'caches URI::HTTPS object' do
       Minfraud.uri
-      expect(Minfraud.class_variable_defined?(:@@uri)).to be_true
+      expect(Minfraud.class_variable_defined?(:@@uri)).to be true
     end
   end
 
@@ -69,11 +69,11 @@ describe Minfraud do
 
     it 'returns true if license_key is set' do
       Minfraud.class_variable_set(:@@license_key, license_key)
-      expect(Minfraud.has_required_configuration?).to be_true
+      expect(Minfraud.has_required_configuration?).to be true
     end
 
     it 'returns false if license_key is not set' do
-      expect(Minfraud.has_required_configuration?).to be_false
+      expect(Minfraud.has_required_configuration?).to be false
     end
   end
 
