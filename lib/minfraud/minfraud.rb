@@ -8,7 +8,12 @@ module Minfraud
 
   # Raised if minFraud returns an error, or if there is an HTTP error
   class ResponseError < StandardError; end
-  
+
+  SERVICE_HOSTS = {
+    :us_east => 'https://minfraud-us-east.maxmind.com/app/ccv2r',
+    :us_west => 'https://minfraud-us-west.maxmind.com/app/ccv2r',
+  }
+
   # May be used to configure using common block style:
   #
   # ```ruby
@@ -59,8 +64,8 @@ module Minfraud
 
   # MaxMind minFraud API service URI
   # @return [URI::HTTPS] service uri
-  def self.uri
-    @@uri ||= URI('https://minfraud.maxmind.com/app/ccv2r')
+  def self.uri(host_choice=nil)
+    URI(SERVICE_HOSTS[host_choice] || SERVICE_HOSTS.values.sample)
   end
 
   # @return [Boolean] service URI
