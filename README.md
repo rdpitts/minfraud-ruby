@@ -40,6 +40,15 @@ transaction.risk_score
 # => 3.48
 ```
 
+To override host choice basically set the `host_choice` attribute on transaction. Available hosts: `:us_east` and `:us_west`
+```ruby
+transaction = Minfraud::Transaction.new do |t|
+  # Required fields
+  t.host_choice = :us_east
+  # ...
+end
+```
+
 ### Exception handling
 
 There are three different exceptions that this gem may raise. Please be prepared to handle them:

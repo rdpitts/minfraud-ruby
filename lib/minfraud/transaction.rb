@@ -30,6 +30,9 @@ module Minfraud
     # Miscellaneous attribute (optional)
     attr_accessor :requested_type, :forwarded_ip
 
+    # Override the host choice for this transaction
+    attr_accessor :host_choice
+
     def initialize
       yield self
       unless has_required_attributes?
