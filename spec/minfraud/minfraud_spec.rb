@@ -50,6 +50,11 @@ describe Minfraud do
       expect(Minfraud.uri(:us_east).to_s).to eq('https://minfraud-us-east.maxmind.com/app/ccv2r')
       expect(Minfraud.uri(:us_west).to_s).to eq('https://minfraud-us-west.maxmind.com/app/ccv2r')
     end
+
+    it 'returns URI::HTTPS object containing the minFraud service uri even if the passed choice is not valid' do
+      allow(Minfraud::SERVICE_HOSTS).to receive(:values).and_return(['https://minfraud-us-east.maxmind.com/app/ccv2r'])
+      expect(Minfraud.uri(:foo).to_s).to eq('https://minfraud-us-east.maxmind.com/app/ccv2r')
+    end
   end
 
   describe '.has_required_configuration?' do
