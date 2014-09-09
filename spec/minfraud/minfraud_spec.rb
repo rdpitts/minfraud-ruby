@@ -42,21 +42,13 @@ describe Minfraud do
   end
 
   describe '.uri' do
-    after do
-      Minfraud.remove_class_variable(:@@uri)
-    end
-
     it 'returns a URI::HTTPS object' do
       expect(Minfraud.uri).to be_instance_of(URI::HTTPS)
     end
 
     it 'returns URI::HTTPS object containing the minFraud service uri' do
-      expect(Minfraud.uri.to_s).to eq('https://minfraud.maxmind.com/app/ccv2r')
-    end
-
-    it 'caches URI::HTTPS object' do
-      Minfraud.uri
-      expect(Minfraud.class_variable_defined?(:@@uri)).to be true
+      expect(Minfraud.uri(:us_east).to_s).to eq('https://minfraud-us-east.maxmind.com/app/ccv2r')
+      expect(Minfraud.uri(:us_west).to_s).to eq('https://minfraud-us-west.maxmind.com/app/ccv2r')
     end
   end
 

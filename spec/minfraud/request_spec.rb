@@ -51,6 +51,21 @@ describe Minfraud::Request do
       allow(Minfraud::Response).to receive(:new).and_return(success_response)
       expect(request.get).to eql(success_response)
     end
+
+    it 'passes along the host choice' do
+      us_east_uri = URI('https://minfraud-us-east.maxmind.com/app/ccv2r')
+      allow(Minfraud::Response).to receive(:new).and_return(success_response)
+      trans = Minfraud::Transaction.new do |t|
+        t.ip = '1'
+        t.city = '2'
+        t.state = '3'
+        t.postal = '4'
+        t.country = '5'
+        t.host_choice = :us_east
+      end
+      expect(Minfraud).to receive(:uri).with(:us_east).and_return(us_east_uri)
+      Minfraud::Request.new(trans).get
+    end
   end
 
 end

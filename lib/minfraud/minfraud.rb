@@ -65,7 +65,7 @@ module Minfraud
   # MaxMind minFraud API service URI
   # @return [URI::HTTPS] service uri
   def self.uri(host_choice=nil)
-    @@uri ||= URI(SERVICE_HOSTS[host_choice] || SERVICE_HOSTS.values.sample)
+    URI(SERVICE_HOSTS[host_choice] || SERVICE_HOSTS.values.sample)
   end
 
   # @return [Boolean] service URI
