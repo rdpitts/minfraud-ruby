@@ -33,9 +33,6 @@ module Minfraud
     # Override the host choice for this transaction
     attr_accessor :host_choice
 
-    # Stores the minFraud response
-    attr_accessor :response
-
     def initialize
       yield self
       unless has_required_attributes?
@@ -68,6 +65,13 @@ module Minfraud
       @requested_type or Minfraud.requested_type
     end
 
+    # Sends transaction to MaxMind in order to get risk data on it.
+    # Caches response object in @response.
+    # @return [Response]
+    def results
+      @response ||= Request.get(self)
+    end
+
     private
 
     # Ensures the required attributes are present
@@ -91,13 +95,6 @@ module Minfraud
       unless attribute.instance_of?(String)
         raise TransactionError, "Transaction.#{attr_name} must me a string"
       end
-    end
-
-    # Sends transaction to MaxMind in order to get risk data on it.
-    # Caches response object in @response.
-    # @return [Response]
-    def results
-      @response ||= Request.get(self)
     end
 
     # @return [String, nil] domain of the email address

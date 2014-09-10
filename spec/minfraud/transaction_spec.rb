@@ -52,7 +52,7 @@ describe Minfraud::Transaction do
       it 'caches response' do
         transaction.risk_score
         expect(transaction.instance_variable_get(:@response)).to eql(response)
-        expect(transaction.response).to eql(response)
+        expect(transaction.results).to eql(response)
       end
 
       it 'returns float containing risk score' do
