@@ -51,6 +51,7 @@ module Minfraud
     end
 
     # Snake cases and symbolizes keys in passed hash.
+    # Transforms values to boolean, integer and float types when applicable
     # @param hash [Hash]
     def transform_keys(hash)
       hash = hash.to_a
