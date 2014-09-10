@@ -7,6 +7,16 @@ module Minfraud
 
     ERROR_CODES = %w( INVALID_LICENSE_KEY IP_REQUIRED LICENSE_REQUIRED COUNTRY_REQUIRED MAX_REQUESTS_REACHED )
     WARNING_CODES = %w( IP_NOT_FOUND COUNTRY_NOT_FOUND CITY_NOT_FOUND CITY_REQUIRED POSTAL_CODE_REQUIRED POSTAL_CODE_NOT_FOUND )
+    INTEGER_ATTRIBUTES = %i(distance queries_remaining ip_accuracy_radius ip_metro_code ip_area_code)
+    FLOAT_ATTRIBUTES = %i(ip_latitude ip_longitude score risk_score proxy_score ip_country_conf ip_region_conf ip_city_conf ip_postal_conf)
+    BOOLEAN_ATTRIBUTES = %i(country_match high_risk_country anonymous_proxy ip_corporate_proxy free_mail carder_email prepaid city_postal_match
+                            ship_city_postal_match bin_match bin_name_match bin_phone_match cust_phone_in_billing_loc ship_forward)
+    BOOLEAN_RESPONSES = {
+      "Yes"      => true,
+      "No"       => false,
+      "NA"       => nil,
+      "NotFound" => nil,
+    }
 
     # Sets attributes on self using minFraud response keys and values
     # Raises an exception if minFraud returns an error message
@@ -41,12 +51,12 @@ module Minfraud
     end
 
     # Snake cases and symbolizes keys in passed hash.
+    # Transforms values to boolean, integer and float types when applicable
     # @param hash [Hash]
     def transform_keys(hash)
       hash = hash.to_a
       hash.map! do |e|
         key = e.first
-        value = e.last
         if key.match(/\A[A-Z]+\z/)
           key = key.downcase
         else
@@ -56,6 +66,18 @@ module Minfraud
           downcase.
           to_sym
         end
+
+        value = e.last
+        value = if BOOLEAN_ATTRIBUTES.include?(key)
+          BOOLEAN_RESPONSES[value]
+        elsif INTEGER_ATTRIBUTES.include?(key)
+          value.to_i
+        elsif FLOAT_ATTRIBUTES.include?(key)
+          value.to_f
+        else
+          value
+        end
+
         [key, value]
       end
       Hash[hash]
