@@ -46,7 +46,7 @@ module Minfraud
     # For example, a score of 20 indicates a 20% chance that a transaction is fraudulent.
     # @return [Float] 0.01 - 100.0
     def risk_score
-      results.risk_score
+      response.risk_score
     end
 
     # Hash of attributes that have been set
@@ -68,7 +68,7 @@ module Minfraud
     # Sends transaction to MaxMind in order to get risk data on it.
     # Caches response object in @response.
     # @return [Response]
-    def results
+    def response
       @response ||= Request.get(self)
     end
 

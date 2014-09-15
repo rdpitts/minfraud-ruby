@@ -38,6 +38,8 @@ end
 
 transaction.risk_score
 # => 3.48
+
+response = transaction.response # http://dev.maxmind.com/minfraud/
 ```
 
 To override host choice basically set the `host_choice` attribute on transaction. Available hosts: `:us_east` and `:us_west`
