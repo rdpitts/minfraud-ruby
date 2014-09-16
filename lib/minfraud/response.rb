@@ -18,6 +18,8 @@ module Minfraud
       "NotFound" => nil,
     }
 
+    attr_reader :body
+
     # Sets attributes on self using minFraud response keys and values
     # Raises an exception if minFraud returns an error message
     # Does nothing (at the moment) if minFraud returns a warning message
