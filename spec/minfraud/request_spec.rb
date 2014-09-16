@@ -61,9 +61,9 @@ describe Minfraud::Request do
         t.state = '3'
         t.postal = '4'
         t.country = '5'
-        t.host_choice = :us_east
+        t.host_choice = 'us_east'
       end
-      expect(Minfraud).to receive(:uri).with(:us_east).and_return(us_east_uri)
+      expect(Minfraud).to receive(:uri).with('us_east').and_return(us_east_uri)
       Minfraud::Request.new(trans).get
     end
   end

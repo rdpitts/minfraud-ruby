@@ -10,8 +10,8 @@ module Minfraud
   class ResponseError < StandardError; end
 
   SERVICE_HOSTS = {
-    :us_east => 'https://minfraud-us-east.maxmind.com/app/ccv2r',
-    :us_west => 'https://minfraud-us-west.maxmind.com/app/ccv2r',
+    'us_east' => 'https://minfraud-us-east.maxmind.com/app/ccv2r',
+    'us_west' => 'https://minfraud-us-west.maxmind.com/app/ccv2r',
   }
 
   # May be used to configure using common block style:

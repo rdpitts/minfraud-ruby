@@ -46,7 +46,7 @@ To override host choice basically set the `host_choice` attribute on transaction
 ```ruby
 transaction = Minfraud::Transaction.new do |t|
   # Required fields
-  t.host_choice = :us_east
+  t.host_choice = 'us_east'
   # ...
 end
 ```
