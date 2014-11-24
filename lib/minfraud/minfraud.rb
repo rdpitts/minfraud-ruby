@@ -6,8 +6,11 @@ module Minfraud
   # Raised if a transaction is invalid
   class TransactionError < ArgumentError; end
 
-  # Raised if minFraud returns an error, or if there is an HTTP error
+  # Raised if minFraud returns an error
   class ResponseError < StandardError; end
+
+  # Raised if there is an HTTP error on minFraud lookup
+  class ConnectionException < StandardError; end
 
   SERVICE_HOSTS = {
     'us_east' => 'https://minfraud-us-east.maxmind.com/app/ccv2r',

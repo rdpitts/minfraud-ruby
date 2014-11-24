@@ -18,38 +18,32 @@ module Minfraud
       "NotFound" => nil,
     }
 
-    attr_reader :body
-
     # Sets attributes on self using minFraud response keys and values
     # Raises an exception if minFraud returns an error message
     # Does nothing (at the moment) if minFraud returns a warning message
     # Raises an exception if minFraud responds with anything other than an HTTP success code
     # @param raw [Net::HTTPResponse]
     def initialize(raw)
-      raise ResponseError, "The minFraud service responded with http error #{raw.class}" unless raw.is_a? Net::HTTPSuccess
-      decode_body(raw.body)
-      raise ResponseError, "Error message from minFraud: #{error}" if errored?
+      @raw = raw
+    end
+
+    def parse
+      @body ||= decode_body
+    end
+
+    def code
+      @raw.code
     end
 
     private
 
-    # True if minFraud returns an error (but not a warning), false if not.
-    # @return [Boolean]
-    def errored?
-      ERROR_CODES.include? err
-    end
-
-    # If minFraud sends back an error or warning message, this will return the message, otherwise nil.
-    # @return [String, nil] minFraud error field in response
-    def error
-      err
-    end
-
     # Parses raw response body and turns its keys and values into attributes on self.
     # @param body [String] raw response body string
-    def decode_body(body)
-      # We bind the resultant hash to @body for #method_missing
-      @body = transform_keys(Hash[body.split(';').map { |e| e.split('=') }])
+    def decode_body
+      raise ConnectionException, "The minFraud service responded with http error #{@raw.class}" unless @raw.is_a?(Net::HTTPSuccess)
+      transform_keys(Hash[@raw.body.split(';').map { |e| e.split('=') }]).tap do |body|
+        raise ResponseError, "Error message from minFraud: #{body[:err]}" if ERROR_CODES.include?(body[:err])
+      end
     end
 
     # Snake cases and symbolizes keys in passed hash.

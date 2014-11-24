@@ -40,6 +40,7 @@ transaction.risk_score
 # => 3.48
 
 response = transaction.response # http://dev.maxmind.com/minfraud/
+response.parse # parses body to create hash
 ```
 
 To override host choice basically set the `host_choice` attribute on transaction. Available hosts: `:us_east` and `:us_west`
@@ -62,8 +63,11 @@ class ConfigurationError < ArgumentError; end
 # Raised if a transaction is invalid
 class TransactionError < ArgumentError; end
 
-# Raised if minFraud returns an error, or if there is an HTTP error
+# Raised if minFraud returns an error
 class ResponseError < StandardError; end
+
+# Raised if there is an HTTP error on minFraud lookup
+class ConnectionException < StandardError; end
 ```
 
 ### Transaction fields
