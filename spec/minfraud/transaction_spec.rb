@@ -23,6 +23,7 @@ describe Minfraud::Transaction do
           t.state = ''
           t.postal = ''
           t.country = ''
+          t.txn_id = ''
         end
       end
       expect { transaction.call }.to raise_exception(Minfraud::TransactionError, /city must me a string/)
@@ -84,6 +85,7 @@ describe Minfraud::Transaction do
         t.postal = 'postal'
         t.country = 'country'
         t.email = 'hughjass@example.com'
+        t.txn_id = 'Order-1'
         t.requested_type = 'standard'
       end
     end
@@ -115,6 +117,7 @@ describe Minfraud::Transaction do
         t.postal = 'postal'
         t.country = 'country'
         t.email = 'hughjass@example.com'
+        t.txn_id = 'Order-1'
         t.requested_type = 'standard'
       end
     end
@@ -134,6 +137,7 @@ describe Minfraud::Transaction do
         t.postal = 'postal'
         t.country = 'country'
         t.email = 'hughjass@example.com'
+        t.txn_id = 'Order-1'
       end
       expect(transaction.attributes[:requested_type]).to eq('premium')
     end

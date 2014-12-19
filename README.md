@@ -33,6 +33,7 @@ transaction = Minfraud::Transaction.new do |t|
   t.state = 'virginia'
   t.postal = '12345'
   t.country = 'US' # http://en.wikipedia.org/wiki/ISO_3166-1
+  t.txn_id = 'Order-1'
   # ...
 end
 
@@ -81,6 +82,7 @@ class ConnectionException < StandardError; end
 | state         | string                | `t.state = 'new york'`              | Customer state/province/region |
 | postal        | string                | `t.postal = '10014'`                | Customer zip/postal code |
 | country       | string                | `t.country = 'US'`                  | Customer ISO 3166-1 country code |
+| txn_id        | string                | `t.txn_id = 'Order-1'`              | Transaction/order id
 
 #### Optional
 
@@ -97,7 +99,6 @@ class ConnectionException < StandardError; end
 | session_id         | string             | Used for linking transactions |
 | user_agent         | string             | Used for linking transactions |
 | accept_language    | string             | Used for linking transactions |
-| txn_id             | string             | Transaction/order id |
 | amount             | string             | Transaction amount |
 | currency           | string             | ISO 4217 currency code |
 | txn_type           | string             | creditcard/debitcard/paypal/google/other/lead/survey/sitereg |

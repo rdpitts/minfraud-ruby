@@ -7,7 +7,7 @@ module Minfraud
   class Transaction
 
     # Required attribute
-    attr_accessor :ip, :city, :state, :postal, :country
+    attr_accessor :ip, :city, :state, :postal, :country, :txn_id
 
     # Shipping address attribute (optional)
     attr_accessor :ship_addr, :ship_city, :ship_state, :ship_postal, :ship_country
@@ -22,7 +22,7 @@ module Minfraud
     attr_accessor :session_id, :user_agent, :accept_language
 
     # Transaction attribute (optional)
-    attr_accessor :txn_id, :amount, :currency, :txn_type
+    attr_accessor :amount, :currency, :txn_type
 
     # Credit card result attribute (optional)
     attr_accessor :avs_result, :cvv_result
@@ -77,13 +77,13 @@ module Minfraud
     # Ensures the required attributes are present
     # @return [Boolean]
     def has_required_attributes?
-      ip and city and state and postal and country
+      ip and city and state and postal and country and txn_id
     end
 
     # Validates the types of the attributes
     # @return [nil, TransactionError]
     def validate_attributes
-      [:ip, :city, :state, :postal, :country].each { |s| validate_string(s) }
+      [:ip, :city, :state, :postal, :country, :txn_id].each { |s| validate_string(s) }
     end
 
     # Given the symbol of an attribute that should be a string,
