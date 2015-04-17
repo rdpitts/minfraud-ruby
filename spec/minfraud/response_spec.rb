@@ -4,6 +4,7 @@ describe Minfraud::Response do
   let(:ok_response_double) { double(Net::HTTPOK, body: 'firstKey=first value;second_keyName=second value', is_a?: true, code: 200) }
   let(:test_response_double) { double(Net::HTTPOK, body: 'distance=17034;ip_latitude=-27.0000', is_a?: true, code: 200) }
   let(:boolean_test_response_double) { double(Net::HTTPOK, body: 'countryMatch=Yes;highRiskCountry=No;binMatch=NotFound;binNameMatch=NA', is_a?: true, code: 200) }
+  let(:latin1_response_double) { double(Net::HTTPOK, body: 'ip_city=Montr\xE9al'.force_encoding("ASCII-8BIT"), is_a?: true, code: 200) }
   let(:warning_response_double) { double(Net::HTTPOK, body: 'err=COUNTRY_NOT_FOUND', is_a?: true, code: 200) }
   let(:error_response_double) { double(Net::HTTPOK, body: 'err=INVALID_LICENSE_KEY', is_a?: true, code: 200) }
   let(:server_error_response_double) { double(Net::HTTPRequestTimeOut, code: 408) }
@@ -13,6 +14,7 @@ describe Minfraud::Response do
     subject(:response) { Minfraud::Response.new(ok_response_double).tap {|r| r.parse} }
     subject(:test_response) { Minfraud::Response.new(test_response_double).tap {|r| r.parse} }
     subject(:boolean_test_response) { Minfraud::Response.new(boolean_test_response_double).tap {|r| r.parse} }
+    subject(:latin1_response) { Minfraud::Response.new(latin1_response_double).tap {|r| r.parse} }
     subject(:server_error_response) { Minfraud::Response.new(server_error_response_double) }
     subject(:error_response) { Minfraud::Response.new(error_response_double) }
     subject(:warning_response) { Minfraud::Response.new(warning_response_double) }
@@ -52,6 +54,11 @@ describe Minfraud::Response do
       expect(boolean_test_response.high_risk_country).to be false
       expect(boolean_test_response.bin_match).to be_nil
       expect(boolean_test_response.bin_name_match).to be_nil
+    end
+
+    it 'parse converts minfraud ISO-8859-1 output to UTF-8 automatically' do
+      expect(latin1_response.ip_city.encoding).to eq(Encoding.find("UTF-8"))
+      expect(latin1_response.ip_city).to eq('Montr\xE9al'.encode("UTF-8"))
     end
   end
 
