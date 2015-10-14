@@ -44,7 +44,7 @@ response = transaction.response # http://dev.maxmind.com/minfraud/
 response.parse # parses body to create hash
 ```
 
-To override host choice basically set the `host_choice` attribute on transaction. Available hosts: `:us_east` and `:us_west`
+To override host choice basically set the `host_choice` attribute on transaction. Available hosts: `:us_east`, `:us_west`, and `:eu_west`
 ```ruby
 transaction = Minfraud::Transaction.new do |t|
   # Required fields
@@ -52,6 +52,8 @@ transaction = Minfraud::Transaction.new do |t|
   # ...
 end
 ```
+
+If `host_choice` is not specified or is invalid then the default host of `minfraud.maxmind.com` is used.
 
 ### Exception handling
 
