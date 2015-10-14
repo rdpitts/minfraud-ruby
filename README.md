@@ -53,7 +53,7 @@ transaction = Minfraud::Transaction.new do |t|
 end
 ```
 
-If `host_choice` is not specified or is invalid then the default host of `minfraud-eu-west.maxmind.com` is used.
+If `host_choice` is not specified or is invalid then the default host of `minfraud.maxmind.com` is used.
 
 ### Exception handling
 
