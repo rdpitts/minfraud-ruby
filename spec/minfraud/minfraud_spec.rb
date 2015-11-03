@@ -53,8 +53,11 @@ describe Minfraud do
     end
 
     it 'returns URI::HTTPS object containing the minFraud service uri even if the passed choice is missing or is not valid' do
-      expect(Minfraud.uri(:foo).to_s).to eq('https://minfraud.maxmind.com/app/ccv2r')
       expect(Minfraud.uri.to_s).to eq('https://minfraud.maxmind.com/app/ccv2r')
+    end
+
+    it 'throws an exception if the string passed is not one of the presets and is not a valid uri' do
+      expect{Minfraud.uri(:foo).to_s}.to raise_exception(ArgumentError)
     end
   end
 
