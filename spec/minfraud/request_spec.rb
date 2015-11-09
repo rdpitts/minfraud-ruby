@@ -68,6 +68,24 @@ describe Minfraud::Request do
       expect(Minfraud).to receive(:uri).with('us_east').and_return(us_east_uri)
       Minfraud::Request.new(trans).get
     end
+
+    it 'sets a timeout on the http connection both read and open' do
+      http = double(:http).as_null_object # loose double
+      expect(Net::HTTP).to receive(:new).and_return(http)
+      expect(http).to receive(:read_timeout=).with(3)
+      expect(http).to receive(:open_timeout=).with(3)
+
+      trans = Minfraud::Transaction.new do |t|
+        t.ip = '1'
+        t.city = '2'
+        t.state = '3'
+        t.postal = '4'
+        t.country = '5'
+        t.txn_id = '6'
+        t.timeout = 3
+      end
+      Minfraud::Request.new(trans).get
+    end
   end
 
 end
