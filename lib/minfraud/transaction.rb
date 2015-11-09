@@ -75,6 +75,11 @@ module Minfraud
       @response ||= Request.get(self)
     end
 
+    def timeout=(timeout)
+      raise ArgumentError, "Timeout value must be Numeric" unless timeout.is_a?(Numeric)
+      @timeout = timeout
+    end
+
     private
 
     # Ensures the required attributes are present

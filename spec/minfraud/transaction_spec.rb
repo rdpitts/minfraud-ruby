@@ -144,4 +144,19 @@ describe Minfraud::Transaction do
 
   end
 
+  describe "#timeout=" do
+    it 'raises an ArgumentError if a numeric value is not provided' do
+      transaction = Minfraud::Transaction.new do |t|
+        t.ip = 'ip'
+        t.city = 'city'
+        t.state = 'state'
+        t.postal = 'postal'
+        t.country = 'country'
+        t.email = 'hughjass@example.com'
+        t.txn_id = 'Order-1'
+      end
+      expect { transaction.timeout = "2.0" }.to raise_exception(ArgumentError, /Timeout value must be Numeric/)
+    end
+  end
+
 end
