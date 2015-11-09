@@ -33,6 +33,9 @@ module Minfraud
     # Override the host choice for this transaction
     attr_accessor :host_choice
 
+    # Set a custom timeout for both read and opening the connection
+    attr_accessor :timeout
+
     def initialize
       yield self
       unless has_required_attributes?
