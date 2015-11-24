@@ -100,8 +100,8 @@ module Minfraud
     # @return [nil, TransactionError]
     def validate_string(attr_name)
       attribute = self.send(attr_name)
-      unless attribute.instance_of?(String)
-        raise TransactionError, "Transaction.#{attr_name} must me a string"
+      if attribute && !attribute.instance_of?(String)
+        raise TransactionError, "Transaction.#{attr_name} must be a string"
       end
     end
 

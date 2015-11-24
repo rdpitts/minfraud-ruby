@@ -26,7 +26,14 @@ describe Minfraud::Transaction do
           t.txn_id = ''
         end
       end
-      expect { transaction.call }.to raise_exception(Minfraud::TransactionError, /city must me a string/)
+      expect { transaction.call }.to raise_exception(Minfraud::TransactionError, /city must be a string/)
+    end
+
+    it 'does not raise an exception if billing address is left nil' do
+      Minfraud::Transaction.new do |t|
+        t.ip = '127.0.0.1'
+        t.txn_id = 'Order-1-1'
+      end
     end
   end
 
