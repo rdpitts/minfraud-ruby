@@ -6,9 +6,20 @@ module Minfraud
   # Raised if a transaction is invalid
   class TransactionError < ArgumentError; end
 
-  # Raised if minFraud returns an error, or if there is an HTTP error
+  # Raised if minFraud returns an error
   class ResponseError < StandardError; end
-  
+
+  # Raised if there is an HTTP error on minFraud lookup
+  class ConnectionException < StandardError; end
+
+  DEFAULT_HOST = 'https://minfraud.maxmind.com/app/ccv2r'
+
+  SERVICE_HOSTS = {
+    'us_east' => 'https://minfraud-us-east.maxmind.com/app/ccv2r',
+    'us_west' => 'https://minfraud-us-west.maxmind.com/app/ccv2r',
+    'eu_west' => 'https://minfraud-eu-west.maxmind.com/app/ccv2r',
+  }
+
   # May be used to configure using common block style:
   #
   # ```ruby
@@ -59,8 +70,8 @@ module Minfraud
 
   # MaxMind minFraud API service URI
   # @return [URI::HTTPS] service uri
-  def self.uri
-    @@uri ||= URI('https://minfraud.maxmind.com/app/ccv2r')
+  def self.uri(host_choice=nil)
+    URI(SERVICE_HOSTS[host_choice] || host_choice || DEFAULT_HOST)
   end
 
   # @return [Boolean] service URI

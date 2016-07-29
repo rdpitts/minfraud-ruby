@@ -7,7 +7,7 @@ module Minfraud
   class Transaction
 
     # Required attribute
-    attr_accessor :ip, :city, :state, :postal, :country
+    attr_accessor :ip, :city, :state, :postal, :country, :txn_id
 
     # Shipping address attribute (optional)
     attr_accessor :ship_addr, :ship_city, :ship_state, :ship_postal, :ship_country
@@ -22,13 +22,19 @@ module Minfraud
     attr_accessor :session_id, :user_agent, :accept_language
 
     # Transaction attribute (optional)
-    attr_accessor :txn_id, :amount, :currency, :txn_type
+    attr_accessor :amount, :currency, :txn_type
 
     # Credit card result attribute (optional)
     attr_accessor :avs_result, :cvv_result
 
     # Miscellaneous attribute (optional)
     attr_accessor :requested_type, :forwarded_ip
+
+    # Override the host choice for this transaction
+    attr_accessor :host_choice
+
+    # Set a custom timeout for both read and opening the connection
+    attr_accessor :timeout
 
     def initialize
       yield self
@@ -43,7 +49,7 @@ module Minfraud
     # For example, a score of 20 indicates a 20% chance that a transaction is fraudulent.
     # @return [Float] 0.01 - 100.0
     def risk_score
-      results.risk_score
+      response.risk_score
     end
 
     # Hash of attributes that have been set
@@ -62,18 +68,30 @@ module Minfraud
       @requested_type or Minfraud.requested_type
     end
 
+    # Sends transaction to MaxMind in order to get risk data on it.
+    # Caches response object in @response.
+    # @return [Response]
+    def response
+      @response ||= Request.get(self)
+    end
+
+    def timeout=(timeout)
+      raise ArgumentError, "Timeout value must be Numeric" unless timeout.is_a?(Numeric)
+      @timeout = timeout
+    end
+
     private
 
     # Ensures the required attributes are present
     # @return [Boolean]
     def has_required_attributes?
-      ip and city and state and postal and country
+      ip && txn_id
     end
 
     # Validates the types of the attributes
     # @return [nil, TransactionError]
     def validate_attributes
-      [:ip, :city, :state, :postal, :country].each { |s| validate_string(s) }
+      [:ip, :city, :state, :postal, :country, :txn_id].each { |s| validate_string(s) }
     end
 
     # Given the symbol of an attribute that should be a string,
@@ -82,16 +100,9 @@ module Minfraud
     # @return [nil, TransactionError]
     def validate_string(attr_name)
       attribute = self.send(attr_name)
-      unless attribute.instance_of?(String)
-        raise TransactionError, "Transaction.#{attr_name} must me a string"
+      if attribute && !attribute.instance_of?(String)
+        raise TransactionError, "Transaction.#{attr_name} must be a string"
       end
-    end
-
-    # Sends transaction to MaxMind in order to get risk data on it.
-    # Caches response object in @response.
-    # @return [Response]
-    def results
-      @response ||= Request.get(self)
     end
 
     # @return [String, nil] domain of the email address

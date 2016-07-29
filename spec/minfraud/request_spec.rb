@@ -14,14 +14,15 @@ describe Minfraud::Request do
 
   describe '#get' do
     it 'sends appropriately encoded transaction data to minFraud service' do
-      Minfraud.stub(:license_key).and_return('6')
-      Minfraud::Response.stub(:new).and_return(success_response)
+      allow(Minfraud).to receive(:license_key?).and_return('6')
+      allow(Minfraud::Response).to receive(:new).and_return(success_response)
       trans = Minfraud::Transaction.new do |t|
         t.ip = '1'
         t.city = '2'
         t.state = '3'
         t.postal = '4'
         t.country = '5'
+        t.txn_id = '6'
       end
       request_body = {
         'i' => '1',
@@ -47,9 +48,43 @@ describe Minfraud::Request do
     end
 
     it 'returns Response object' do
-      request.stub(:send_get_request)
-      Minfraud::Response.stub(:new).and_return(success_response)
+      allow(request).to receive(:send_get_request)
+      allow(Minfraud::Response).to receive(:new).and_return(success_response)
       expect(request.get).to eql(success_response)
+    end
+
+    it 'passes along the host choice' do
+      us_east_uri = URI('https://minfraud-us-east.maxmind.com/app/ccv2r')
+      allow(Minfraud::Response).to receive(:new).and_return(success_response)
+      trans = Minfraud::Transaction.new do |t|
+        t.ip = '1'
+        t.city = '2'
+        t.state = '3'
+        t.postal = '4'
+        t.country = '5'
+        t.txn_id = '6'
+        t.host_choice = 'us_east'
+      end
+      expect(Minfraud).to receive(:uri).with('us_east').and_return(us_east_uri)
+      Minfraud::Request.new(trans).get
+    end
+
+    it 'sets a timeout on the http connection both read and open' do
+      http = double(:http).as_null_object # loose double
+      expect(Net::HTTP).to receive(:new).and_return(http)
+      expect(http).to receive(:read_timeout=).with(3)
+      expect(http).to receive(:open_timeout=).with(3)
+
+      trans = Minfraud::Transaction.new do |t|
+        t.ip = '1'
+        t.city = '2'
+        t.state = '3'
+        t.postal = '4'
+        t.country = '5'
+        t.txn_id = '6'
+        t.timeout = 3
+      end
+      Minfraud::Request.new(trans).get
     end
   end
 
